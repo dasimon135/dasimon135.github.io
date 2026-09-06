@@ -283,6 +283,14 @@
     color: var(--muted);
   }
 
+  .install { margin: 0; }
+  .hacs-button {
+    display: inline-block;
+    line-height: 0;
+    border-radius: 4px;
+  }
+  .hacs-button img { height: 30px; width: auto; }
+
   .support a {
     color: var(--accent);
     text-decoration-color: var(--accent);
@@ -383,6 +391,12 @@
             The integration was originally <a href="https://github.com/mduran80/daikin_madoka">mduran80’s work</a>.
             This fork has carried it since — rewritten connection layer, the
             pairing handling above, and the ESPHome route.
+          </p>
+          <p class="install">
+            <a class="hacs-button" href="https://my.home-assistant.io/redirect/hacs_repository/?owner=dasimon135&amp;repository=daikin_madoka&amp;category=integration">
+              <img src="https://my.home-assistant.io/badges/hacs_repository.svg"
+                   alt="Open the daikin_madoka repository inside your Home Assistant Community Store" loading="lazy">
+            </a>
           </p>
         </div>
       </article>
@@ -499,6 +513,12 @@
       because someone was patient enough to run a test build and tell me what
       happened.
     </p>
+    <p>
+      Only the Madoka integration is listed in HACS itself — the button on it
+      opens it straight in your own Home Assistant. The others are added to HACS
+      as a custom repository first, which takes three clicks and is the first
+      thing each README explains.
+    </p>
     <p class="support">
       All of it is free, and it stays free. If something here saved you an
       afternoon, <a href="https://buymeacoffee.com/dasimon135">you can buy me a
@@ -515,7 +535,7 @@
       </div>
       <div>
         <dt>Install</dt>
-        <dd>HACS, per repository</dd>
+        <dd>HACS</dd>
       </div>
       <div>
         <dt>Price</dt>
