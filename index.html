@@ -1,0 +1,541 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Open-source Home Assistant integrations for hardware that shipped without one — Daikin Madoka thermostats, Bluetooth mesh lighting, 433 MHz fans and blinds.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E📡%3C/text%3E%3C/svg%3E">
+<title>Undocumented Devices</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<style>
+  :root {
+    --ground:      #ECEFF1;
+    --surface:     #FBFCFC;
+    --ink:         #10171B;
+    --muted:       #56666E;
+    --line:        #CBD4D8;
+    --line-soft:   #DDE4E7;
+    --accent:      #0D6A6E;
+    --signal:      #A24A22;
+
+    --display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+    --body: "Source Serif 4", Georgia, "Times New Roman", serif;
+    --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+
+    --measure: 34rem;
+    --page: 60rem;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:    #0D1316;
+      --surface:   #151D21;
+      --ink:       #E3EAEC;
+      --muted:     #93A4AB;
+      --line:      #2C393F;
+      --line-soft: #222D32;
+      --accent:    #3FAFB2;
+      --signal:    #D6805A;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:    #0D1316;
+    --surface:   #151D21;
+    --ink:       #E3EAEC;
+    --muted:     #93A4AB;
+    --line:      #2C393F;
+    --line-soft: #222D32;
+    --accent:    #3FAFB2;
+    --signal:    #D6805A;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: var(--page);
+    margin: 0 auto;
+    padding: clamp(2rem, 6vw, 4.5rem) clamp(1.25rem, 5vw, 3rem) 4rem;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(2.5rem, 6vw, 4rem);
+  }
+
+  a {
+    color: inherit;
+    text-decoration-color: var(--line);
+    text-underline-offset: 0.18em;
+  }
+  a:hover { text-decoration-color: var(--accent); }
+  a:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* ---- masthead ---- */
+
+  .masthead {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  h1 {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(2.25rem, 6.5vw, 3.5rem);
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  h1 .light {
+    display: block;
+    font-weight: 500;
+    color: var(--muted);
+    letter-spacing: -0.015em;
+  }
+
+  .lede {
+    max-width: var(--measure);
+    font-size: 1.1875rem;
+    line-height: 1.62;
+    margin: 0;
+  }
+
+  .standfirst {
+    max-width: var(--measure);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 0;
+  }
+  .standfirst p { margin: 0; color: var(--muted); }
+  .standfirst strong { color: var(--ink); font-weight: 600; }
+
+  /* ---- frequency band sections ---- */
+
+  .band { display: flex; flex-direction: column; gap: 1.75rem; }
+
+  .band-head {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .band-label {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .band-freq {
+    font-family: var(--mono);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+  }
+  .band--rf .band-freq { color: var(--signal); }
+
+  .band-what {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .ruler { display: block; width: 100%; height: 14px; color: var(--line); }
+  .ruler .mark { color: var(--accent); }
+  .band--rf .ruler .mark { color: var(--signal); }
+
+  /* ---- project rows ---- */
+
+  .projects {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .project {
+    display: grid;
+    grid-template-columns: 14rem 1fr;
+    gap: 0.5rem 2.5rem;
+    padding: 1.5rem 0;
+    border-top: 1px solid var(--line-soft);
+    align-items: start;
+  }
+  .project:last-child { border-bottom: 1px solid var(--line-soft); }
+
+  .project-id { display: flex; flex-direction: column; gap: 0.4rem; }
+
+  .project-name {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 1.0625rem;
+    letter-spacing: -0.01em;
+    margin: 0;
+  }
+  .project-name a { text-decoration-color: var(--line); }
+
+  .project-meta {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+  }
+
+  .role {
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-size: 0.6875rem;
+  }
+
+  .project-body { display: flex; flex-direction: column; gap: 0.75rem; }
+  .project-body p { margin: 0; max-width: var(--measure); }
+
+  .aside {
+    font-size: 0.9375rem;
+    color: var(--muted);
+    font-style: italic;
+    padding-left: 0.875rem;
+    border-left: 2px solid var(--line);
+  }
+  .band--ble .aside { border-left-color: var(--accent); }
+  .band--rf .aside { border-left-color: var(--signal); }
+
+  @media (max-width: 44rem) {
+    .project { grid-template-columns: 1fr; gap: 0.75rem; }
+  }
+
+  /* ---- closing ---- */
+
+  .colophon {
+    background: var(--surface);
+    border: 1px solid var(--line-soft);
+    padding: clamp(1.5rem, 4vw, 2.25rem);
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  h2 {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 1.375rem;
+    letter-spacing: -0.015em;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  .colophon p { margin: 0; max-width: var(--measure); }
+
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+    gap: 1.25rem 2rem;
+    margin: 0;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--line-soft);
+  }
+  .facts div { display: flex; flex-direction: column; gap: 0.3rem; }
+  .facts dt {
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .facts dd {
+    margin: 0;
+    font-family: var(--display);
+    font-weight: 500;
+    font-size: 0.9375rem;
+  }
+
+  footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 2rem;
+    align-items: baseline;
+    justify-content: space-between;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    font-family: var(--mono);
+    font-size: 0.8125rem;
+    color: var(--muted);
+  }
+  footer a { color: var(--ink); }
+</style>
+<style>
+  :root { color-scheme: light dark; }
+  body { margin: 0; }
+  img { max-width: 100%; }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <header class="masthead">
+    <p class="eyebrow">David Simon · Home Assistant</p>
+    <h1>Undocumented Devices<span class="light">and how to talk to them anyway</span></h1>
+    <p class="lede">
+      I write open-source Home Assistant integrations for hardware that shipped
+      without one — devices that work perfectly well, but that the manufacturer
+      only ever exposed through a phone app.
+    </p>
+    <div class="standfirst">
+      <p>
+        The pattern is always the same. Something on your wall speaks a private
+        protocol to a vendor cloud, and nobody wrote down what it says. So you
+        capture the traffic, work out what the bytes mean, and hand the result
+        back to Home Assistant as ordinary entities.
+      </p>
+      <p>
+        <strong>Everything here is free, MIT-licensed, and runs entirely on your
+        own network.</strong> No accounts, no vendor cloud, nothing leaving the
+        house.
+      </p>
+    </div>
+  </header>
+
+  <section class="band band--ble">
+    <div class="band-head">
+      <div class="band-label">
+        <span class="band-freq">2.4 GHz</span>
+        <span class="band-what">Bluetooth Low Energy</span>
+      </div>
+      <svg class="ruler" viewBox="0 0 600 14" preserveAspectRatio="none" aria-hidden="true">
+        <line x1="0" y1="13" x2="600" y2="13" stroke="currentColor" stroke-width="1" fill="none"></line>
+        <g stroke="currentColor" stroke-width="1" fill="none">
+          <line x1="0" y1="6" x2="0" y2="13"></line>
+          <line x1="75" y1="9" x2="75" y2="13"></line>
+          <line x1="150" y1="9" x2="150" y2="13"></line>
+          <line x1="225" y1="9" x2="225" y2="13"></line>
+          <line x1="300" y1="6" x2="300" y2="13"></line>
+          <line x1="375" y1="9" x2="375" y2="13"></line>
+          <line x1="450" y1="9" x2="450" y2="13"></line>
+          <line x1="525" y1="9" x2="525" y2="13"></line>
+          <line x1="599" y1="6" x2="599" y2="13"></line>
+        </g>
+        <g class="mark">
+          <line x1="150" y1="1" x2="150" y2="13" stroke="currentColor" stroke-width="2" fill="none"></line>
+        </g>
+      </svg>
+    </div>
+
+    <div class="projects">
+
+      <article class="project">
+        <div class="project-id">
+          <h3 class="project-name"><a href="https://github.com/dasimon135/daikin_madoka">daikin_madoka</a></h3>
+          <p class="project-meta"><span class="role">Integration</span><span>★ 11</span></p>
+        </div>
+        <div class="project-body">
+          <p>
+            A Daikin BRC1H “Madoka” wall thermostat, over Bluetooth. Temperature,
+            mode, fan speed and filter alerts become ordinary Home Assistant
+            entities — no Daikin account, no phone app.
+          </p>
+          <p class="aside">
+            The panel silently ignores any Bluetooth link it hasn’t paired with.
+            No error, no refusal, just nothing. A good half of this project is
+            that one sentence, handled properly.
+          </p>
+        </div>
+      </article>
+
+      <article class="project">
+        <div class="project-id">
+          <h3 class="project-name"><a href="https://github.com/dasimon135/pymadoka">pymadoka</a></h3>
+          <p class="project-meta"><span class="role">Library</span></p>
+        </div>
+        <div class="project-body">
+          <p>
+            The layer underneath the integration: it reassembles the chunked GATT
+            packets the thermostat speaks and turns them back into temperatures,
+            modes and fan speeds. Usable on its own, without Home Assistant.
+          </p>
+        </div>
+      </article>
+
+      <article class="project">
+        <div class="project-id">
+          <h3 class="project-name"><a href="https://github.com/dasimon135/ha-bluetooth-mesh">ha-bluetooth-mesh</a></h3>
+          <p class="project-meta"><span class="role">Integration</span><span>★ 3</span></p>
+        </div>
+        <div class="project-body">
+          <p>
+            Bluetooth SIG Mesh lighting — Häfele Connect Mesh and other ThingOS
+            gear — driven through the ESPHome Bluetooth proxies you already have.
+            A pure-Python mesh stack, provisioning and all.
+          </p>
+          <p class="aside">
+            The vendor’s own gateway was discontinued. The lights were fine; only
+            the way in had disappeared.
+          </p>
+        </div>
+      </article>
+
+      <article class="project">
+        <div class="project-id">
+          <h3 class="project-name"><a href="https://github.com/dasimon135/ha-bluesight">ha-bluesight</a></h3>
+          <p class="project-meta"><span class="role">Diagnostics</span><span>★ 1</span></p>
+        </div>
+        <div class="project-body">
+          <p>
+            Read-only, and it changes nothing. It shows which Bluetooth proxy is
+            holding which connection slot, then names what it sees: deadlocks,
+            ghost slots, pairing storms. Written after spending too long guessing.
+          </p>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <section class="band band--rf">
+    <div class="band-head">
+      <div class="band-label">
+        <span class="band-freq">433.92 MHz</span>
+        <span class="band-what">ISM band · one-way radio</span>
+      </div>
+      <svg class="ruler" viewBox="0 0 600 14" preserveAspectRatio="none" aria-hidden="true">
+        <line x1="0" y1="13" x2="600" y2="13" stroke="currentColor" stroke-width="1" fill="none"></line>
+        <g stroke="currentColor" stroke-width="1" fill="none">
+          <line x1="0" y1="6" x2="0" y2="13"></line>
+          <line x1="75" y1="9" x2="75" y2="13"></line>
+          <line x1="150" y1="9" x2="150" y2="13"></line>
+          <line x1="225" y1="9" x2="225" y2="13"></line>
+          <line x1="300" y1="6" x2="300" y2="13"></line>
+          <line x1="375" y1="9" x2="375" y2="13"></line>
+          <line x1="450" y1="9" x2="450" y2="13"></line>
+          <line x1="525" y1="9" x2="525" y2="13"></line>
+          <line x1="599" y1="6" x2="599" y2="13"></line>
+        </g>
+        <g class="mark">
+          <line x1="450" y1="1" x2="450" y2="13" stroke="currentColor" stroke-width="2" fill="none"></line>
+        </g>
+      </svg>
+    </div>
+
+    <div class="projects">
+
+      <article class="project">
+        <div class="project-id">
+          <h3 class="project-name"><a href="https://github.com/dasimon135/ha-rf-fan">ha-rf-fan</a></h3>
+          <p class="project-meta"><span class="role">Integration</span><span>★ 8</span></p>
+        </div>
+        <div class="project-body">
+          <p>
+            Ceiling fans that only ever came with a handset. You press each button
+            once while it listens, and the fan turns into a Home Assistant entity —
+            speeds, light, timers, direction, whatever your remote actually has.
+          </p>
+          <p class="aside">
+            It never decodes the protocol. It captures what your remote sends and
+            sends it back, which is why it works with fans I have never seen.
+          </p>
+        </div>
+      </article>
+
+      <article class="project">
+        <div class="project-id">
+          <h3 class="project-name"><a href="https://github.com/dasimon135/ha-dooya">ha-dooya</a></h3>
+          <p class="project-meta"><span class="role">Integration</span><span>★ 6</span></p>
+        </div>
+        <div class="project-body">
+          <p>
+            Dooya roller blinds and shutters, through an ESPHome CC1101 gateway or
+            a Broadlink RM4 Pro. Position too — the motor reports nothing back, so
+            it is timed from travel, and recalibrated every time a blind reaches
+            an end stop.
+          </p>
+        </div>
+      </article>
+
+      <article class="project">
+        <div class="project-id">
+          <h3 class="project-name"><a href="https://github.com/dasimon135/rf-gateway">rf-gateway</a></h3>
+          <p class="project-meta"><span class="role">Foundation</span></p>
+        </div>
+        <div class="project-body">
+          <p>
+            The floor under the two above: one versioned ESPHome package, one plain
+            Python library, and a code format that carries its own description — so
+            the next 433 MHz device doesn’t start from nothing.
+          </p>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <section class="colophon">
+    <h2>How this works, if you’re about to open an issue</h2>
+    <p>
+      Support happens on GitHub, in the repository the problem belongs to. That is
+      deliberate: an issue stays readable, searchable and linkable long after the
+      conversation ends, which a forum thread does not. Say what hardware you have
+      and bring the logs, and you’ll usually get an answer within the week.
+    </p>
+    <p>
+      Bug reports from people with hardware I don’t own are worth more than they
+      look. Several of these projects support devices I have never touched,
+      because someone was patient enough to run a test build and tell me what
+      happened.
+    </p>
+    <dl class="facts">
+      <div>
+        <dt>Licence</dt>
+        <dd>MIT, all of it</dd>
+      </div>
+      <div>
+        <dt>Runs</dt>
+        <dd>On your network only</dd>
+      </div>
+      <div>
+        <dt>Install</dt>
+        <dd>HACS, per repository</dd>
+      </div>
+      <div>
+        <dt>Price</dt>
+        <dd>Free, and staying free</dd>
+      </div>
+    </dl>
+  </section>
+
+  <footer>
+    <span>Written and maintained by David Simon</span>
+    <span><a href="https://github.com/dasimon135">github.com/dasimon135</a></span>
+  </footer>
+
+</div>
+</body>
+</html>
