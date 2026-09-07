@@ -323,23 +323,23 @@
 
   <header class="masthead">
     <p class="eyebrow">David Simon · Home Assistant</p>
-    <h1>Undocumented Devices<span class="light">and how to talk to them anyway</span></h1>
+    <h1>Undocumented Devices<span class="light">and how to use them without their apps</span></h1>
     <p class="lede">
-      I write open-source Home Assistant integrations for hardware that shipped
-      without one — devices that work perfectly well, but that the manufacturer
-      only ever exposed through a phone app.
+      You bought a thermostat, some blinds, a ceiling fan. They work fine. The
+      only thing standing between you and controlling them properly is the
+      manufacturer’s app.
     </p>
     <div class="standfirst">
       <p>
-        The pattern is always the same. Something on your wall speaks a private
-        protocol to a vendor cloud, and nobody wrote down what it says. So you
-        capture the traffic, work out what the bytes mean, and hand the result
-        back to Home Assistant as ordinary entities.
+        I write the Home Assistant integrations that give those devices back to
+        you. Once one is installed, the device appears in Home Assistant like any
+        other: you can put it on a dashboard, automate it, or ask your voice
+        assistant for it.
       </p>
       <p>
-        <strong>Everything here is free, MIT-licensed, and runs entirely on your
-        own network.</strong> No accounts, no vendor cloud, nothing leaving the
-        house.
+        <strong>All of it is free, and all of it runs on your own network.</strong>
+        There is no account to create and no cloud to depend on — nothing about
+        your home leaves your home.
       </p>
     </div>
   </header>
@@ -378,14 +378,15 @@
         </div>
         <div class="project-body">
           <p>
-            A Daikin BRC1H “Madoka” wall thermostat, over Bluetooth. Temperature,
-            mode, fan speed and filter alerts become ordinary Home Assistant
-            entities — no Daikin account, no phone app.
+            Control your Daikin heating and cooling from Home Assistant: set the
+            temperature, change the mode, adjust the fan, and see when the filter
+            needs cleaning. It reaches the BRC1H “Madoka” panel on your wall over
+            Bluetooth — no Daikin account, no phone app.
           </p>
           <p class="aside">
-            The panel silently ignores any Bluetooth link it hasn’t paired with.
-            No error, no refusal, just nothing. A good half of this project is
-            that one sentence, handled properly.
+            The panel ignores any Bluetooth connection it hasn’t been paired with.
+            No error, no refusal — it simply never answers. Handling that one
+            sentence properly is half of this project.
           </p>
           <p class="credit">
             The integration was originally <a href="https://github.com/mduran80/daikin_madoka">mduran80’s work</a>.
@@ -408,13 +409,14 @@
         </div>
         <div class="project-body">
           <p>
-            Bluetooth SIG Mesh lighting — Häfele Connect Mesh and other ThingOS
-            gear — driven through the ESPHome Bluetooth proxies you already have.
-            A pure-Python mesh stack, provisioning and all.
+            Switch and dim your Häfele Connect Mesh lights from Home Assistant,
+            using the ESPHome Bluetooth proxies already scattered around your
+            house. It speaks Bluetooth Mesh itself, pairing included, so there is
+            no extra box to buy.
           </p>
           <p class="aside">
-            The vendor’s own gateway was discontinued. The lights were fine; only
-            the way in had disappeared.
+            Häfele discontinued the gateway these lights needed. The lights
+            themselves were fine — only the way in had disappeared.
           </p>
         </div>
       </article>
@@ -426,9 +428,10 @@
         </div>
         <div class="project-body">
           <p>
-            Read-only, and it changes nothing. It shows which Bluetooth proxy is
-            holding which connection slot, then names what it sees: deadlocks,
-            ghost slots, pairing storms. Written after spending too long guessing.
+            When your Bluetooth devices keep going unavailable, this tells you why.
+            It shows which proxy is holding which connection, and names the fault
+            when it finds one. It only ever watches — it changes nothing. I wrote
+            it after too many evenings spent guessing.
           </p>
         </div>
       </article>
@@ -470,13 +473,15 @@
         </div>
         <div class="project-body">
           <p>
-            Ceiling fans that only ever came with a handset. You press each button
-            once while it listens, and the fan turns into a Home Assistant entity —
-            speeds, light, timers, direction, whatever your remote actually has.
+            Put a ceiling fan that only came with a remote into Home Assistant. You
+            press each button once while it listens, and you get back the speeds,
+            the light, the timer and the direction — whatever your own remote
+            happens to have.
           </p>
           <p class="aside">
-            It never decodes the protocol. It captures what your remote sends and
-            sends it back, which is why it works with fans I have never seen.
+            It never tries to understand the signal. It records what your remote
+            sends and plays it back — which is why it works with fans I have never
+            seen.
           </p>
         </div>
       </article>
@@ -488,10 +493,11 @@
         </div>
         <div class="project-body">
           <p>
-            Dooya roller blinds and shutters, through an ESPHome CC1101 gateway or
-            a Broadlink RM4 Pro. Position too — the motor reports nothing back, so
-            it is timed from travel, and recalibrated every time a blind reaches
-            an end stop.
+            Open and close your Dooya blinds and shutters from Home Assistant, and
+            stop them halfway with a slider. The motor never says where it is, so
+            the position is timed from how long the blind travels, and corrected
+            every time it reaches the top or the bottom. Works through an ESPHome
+            CC1101 gateway or a Broadlink RM4 Pro.
           </p>
         </div>
       </article>
@@ -500,24 +506,24 @@
   </section>
 
   <section class="colophon">
-    <h2>How this works, if you’re about to open an issue</h2>
+    <h2>Something not working?</h2>
     <p>
-      Support happens on GitHub, in the repository the problem belongs to. That is
-      deliberate: an issue stays readable, searchable and linkable long after the
-      conversation ends, which a forum thread does not. Say what hardware you have
-      and bring the logs, and you’ll usually get an answer within the week.
+      Open an issue in the repository it belongs to. Tell me what hardware you
+      have and attach the logs — with those two things I can usually answer within
+      the week. Support lives on GitHub rather than a forum because an issue stays
+      searchable and linkable long after the conversation ends.
     </p>
     <p>
-      Bug reports from people with hardware I don’t own are worth more than they
-      look. Several of these projects support devices I have never touched,
-      because someone was patient enough to run a test build and tell me what
-      happened.
+      If you have a device I don’t own, your bug report is worth more than you
+      would think. Several of these projects support hardware I have never
+      touched, because someone was patient enough to run a test build and tell me
+      what happened.
     </p>
     <p>
-      Only the Madoka integration is listed in HACS itself — the button on it
-      opens it straight in your own Home Assistant. The others are added to HACS
-      as a custom repository first, which takes three clicks and is the first
-      thing each README explains.
+      Only Madoka is listed in HACS so far, so its button above opens it straight
+      in your own Home Assistant. The other four are added to HACS by hand first —
+      three clicks, and the first thing each README walks you through. Their
+      listings are submitted and waiting in the queue.
     </p>
     <p class="support">
       All of it is free, and it stays free. If something here saved you an
